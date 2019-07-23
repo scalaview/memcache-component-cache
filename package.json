@@ -1,0 +1,21 @@
+{
+  "name": "memcache-component-cache",
+  "version": "1.0.0",
+  "description": "use memcache in vue ssr component cache",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vue",
+    "ssr",
+    "memcache",
+    "component",
+    "cache"
+  ],
+  "author": "scalaview",
+  "license": "ISC",
+  "dependencies": {
+    "memcached": "^2.2.2"
+  }
+}
