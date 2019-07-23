@@ -68,8 +68,3 @@ export default {
 ```
 
 Follow the [Vue.js SSR Component Level Caching documentation](https://ssr.vuejs.org/en/caching.html#component-level-caching) for more informations about when cacheing your components.
-
-Don't forget that this memcache cache is an external cache and is not reset when you deploy your application.
-I will soon add a suffix option to the module, to be able to generate a new cache when the application is updated.
-
-Enjoy.
