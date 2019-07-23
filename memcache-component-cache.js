@@ -37,7 +37,14 @@ MemcacheComponentCache.prototype.set = function (key, val) {
 }
 
 MemcacheComponentCache.prototype.get = function (key, cb) {
-  this[MEMCACHE].get(key).then((res) => {
+  this[MEMCACHE].get(key, function (err, res) {
+    if(err){
+      if(this[ISDEV]){
+        console.error(err);
+      }
+      cd();
+      return;
+    }
     try{
       if(this[ISDEV]){
         console.log("get key: ", key, " cache: ", res ? `${res.slice(0, 30)}...` : "");
@@ -51,7 +58,7 @@ MemcacheComponentCache.prototype.get = function (key, cb) {
 }
 
 MemcacheComponentCache.prototype.has = function (key, cb) {
-  this[MEMCACHE].exists(key).then((res) => {
-    cb(1 === res);
-  })
+  this[MEMCACHE].append(key, '', function (err) {
+    cb(err === undefined);
+  });
 }
