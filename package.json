@@ -1,6 +1,6 @@
 {
   "name": "memcache-component-cache",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "use memcache in vue ssr component cache",
   "main": "index.js",
   "repository": {
