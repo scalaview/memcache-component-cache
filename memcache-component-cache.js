@@ -30,10 +30,15 @@ function MemcacheComponentCache (options) {
 }
 
 MemcacheComponentCache.prototype.set = function (key, val) {
+  let components = new Array();
+  val.components.forEach(function(f){
+    components.push(f.toString())
+  })
+  val.components = components
   if(this[ISDEV]){
-    console.log("set key: ", key, " cache: ", JSON.stringify(val).slice(0, 30));
+    console.log("set key: ", key, " cache: ", `${JSON.stringify(val).slice(0, 30)}...`);
   }
-  this[MEMCACHE].set(key, JSON.stringify(val), this[TTL], function(err){
+  this[MEMCACHE].set(key, val, this[TTL], function(err){
     if(err && this[isDev]){
       console.error(err)
     }
@@ -43,17 +48,17 @@ MemcacheComponentCache.prototype.set = function (key, val) {
 MemcacheComponentCache.prototype.get = function (key, cb) {
   this[MEMCACHE].get(key, function (err, res) {
     if(err){
-      if(this[ISDEV]){
-        console.error(err);
-      }
-      cd();
-      return;
+      throw error;
     }
     try{
+      let components = new Set(res.components.map(function(f){
+        return new Function(`return ${f}`);
+      }));
+      res.components = components
       if(this[ISDEV]){
         console.log("get key: ", key, " cache: ", res ? `${res.slice(0, 30)}...` : "");
       }
-      cb(JSON.parse(res));
+      cb(res);
     }catch(e){
       console.error(e);
       cb();
