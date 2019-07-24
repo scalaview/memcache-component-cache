@@ -2,6 +2,7 @@
 
 module.exports = MemcacheComponentCache;
 var Memcached = require('memcached');
+const {serialize, deserialize} = require('./serializer');
 
 const hasSymbol = typeof Symbol === 'function';
 var makeSymbol;
@@ -30,15 +31,10 @@ function MemcacheComponentCache (options) {
 }
 
 MemcacheComponentCache.prototype.set = function (key, val) {
-  let components = new Array();
-  val.components.forEach(function(f){
-    components.push(f.toString())
-  })
-  val.components = components
   if(this[ISDEV]){
     console.log("set key: ", key, " cache: ", `${JSON.stringify(val).slice(0, 30)}...`);
   }
-  this[MEMCACHE].set(key, val, this[TTL], function(err){
+  this[MEMCACHE].set(key, serialize(val), this[TTL], function(err){
     if(err && this[isDev]){
       console.error(err)
     }
@@ -52,14 +48,10 @@ MemcacheComponentCache.prototype.get = function (key, cb) {
       throw error;
     }
 
-    let components = new Set(res.components.map(function(f){
-      return new Function(`return ${f}`);
-    }));
-    res.components = components
     if(isDev){
       console.log("get key: ", key, " cache: ", `${JSON.stringify(res).slice(0, 30)}...`);
     }
-    cb(res);
+    cb(deserialize(res));
   })
 }
 
