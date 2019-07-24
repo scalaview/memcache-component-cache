@@ -46,23 +46,20 @@ MemcacheComponentCache.prototype.set = function (key, val) {
 }
 
 MemcacheComponentCache.prototype.get = function (key, cb) {
+  var isDev = this[ISDEV]
   this[MEMCACHE].get(key, function (err, res) {
     if(err){
       throw error;
     }
-    try{
-      let components = new Set(res.components.map(function(f){
-        return new Function(`return ${f}`);
-      }));
-      res.components = components
-      if(this[ISDEV]){
-        console.log("get key: ", key, " cache: ", res ? `${res.slice(0, 30)}...` : "");
-      }
-      cb(res);
-    }catch(e){
-      console.error(e);
-      cb();
+
+    let components = new Set(res.components.map(function(f){
+      return new Function(`return ${f}`);
+    }));
+    res.components = components
+    if(isDev){
+      console.log("get key: ", key, " cache: ", `${JSON.stringify(res).slice(0, 30)}...`);
     }
+    cb(res);
   })
 }
 
