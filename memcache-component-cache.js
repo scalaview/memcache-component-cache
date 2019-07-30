@@ -31,11 +31,12 @@ function MemcacheComponentCache (options) {
 }
 
 MemcacheComponentCache.prototype.set = function (key, val) {
-  if(this[ISDEV]){
+  var isDev = this[ISDEV]
+  if(isDev){
     console.log("set key: ", key, " cache: ", `${JSON.stringify(val).slice(0, 30)}...`);
   }
   this[MEMCACHE].set(key, serialize(val), this[TTL], function(err){
-    if(err && this[isDev]){
+    if(err && isDev){
       console.error(err)
     }
   });
